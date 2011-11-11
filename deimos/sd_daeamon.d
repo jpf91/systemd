@@ -1,8 +1,5 @@
 /*-*- Mode: C; c-basic-offset: 8; indent-tabs-mode: nil -*-*/
 
-#ifndef foosddaemonhfoo
-#define foosddaemonhfoo
-
 /***
   Copyright 2010 Lennart Poettering
 
@@ -27,12 +24,14 @@
   SOFTWARE.
 ***/
 
-#include <sys/types.h>
-#include <inttypes.h>
+version(Posix){}
+else
+{
+    static assert(false, "SystemD is only supported on Posix systems!");
+}
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+import core.sys.posix.sys.types;
+import core.stdc.inttypes;
 
 /*
   Reference implementation of a few systemd related interfaces for
@@ -67,14 +66,6 @@ extern "C" {
   See sd-daemon(7) for more information.
 */
 
-#ifndef _sd_printf_attr_
-#if __GNUC__ >= 4
-#define _sd_printf_attr_(a,b) __attribute__ ((format (printf, a, b)))
-#else
-#define _sd_printf_attr_(a,b)
-#endif
-#endif
-
 /*
   Log levels for usage on stderr:
 
@@ -82,17 +73,19 @@ extern "C" {
 
   This is similar to printk() usage in the kernel.
 */
-#define SD_EMERG   "<0>"  /* system is unusable */
-#define SD_ALERT   "<1>"  /* action must be taken immediately */
-#define SD_CRIT    "<2>"  /* critical conditions */
-#define SD_ERR     "<3>"  /* error conditions */
-#define SD_WARNING "<4>"  /* warning conditions */
-#define SD_NOTICE  "<5>"  /* normal but significant condition */
-#define SD_INFO    "<6>"  /* informational */
-#define SD_DEBUG   "<7>"  /* debug-level messages */
+enum SD_EMERG   = "<0>";  /* system is unusable */
+enum SD_ALERT   = "<1>";  /* action must be taken immediately */
+enum SD_CRIT    = "<2>";  /* critical conditions */
+enum SD_ERR     = "<3>";  /* error conditions */
+enum SD_WARNING = "<4>";  /* warning conditions */
+enum SD_NOTICE  = "<5>";  /* normal but significant condition */
+enum SD_INFO    = "<6>";  /* informational */
+enum SD_DEBUG   = "<7>";  /* debug-level messages */
 
 /* The first passed file descriptor is fd 3 */
-#define SD_LISTEN_FDS_START 3
+enum SD_LISTEN_FDS_START = 3;
+
+extern(C):
 
 /*
   Returns how many file descriptors have been passed, or a negative
@@ -121,7 +114,7 @@ int sd_listen_fds(int unset_environment);
 
   See sd_is_fifo(3) for more information.
 */
-int sd_is_fifo(int fd, const char *path);
+int sd_is_fifo(int fd, const(char*) path);
 
 /*
   Helper call for identifying a passed file descriptor. Returns 1 if
@@ -133,7 +126,7 @@ int sd_is_fifo(int fd, const char *path);
 
   See sd_is_special(3) for more information.
 */
-int sd_is_special(int fd, const char *path);
+int sd_is_special(int fd, const(char*) path);
 
 /*
   Helper call for identifying a passed file descriptor. Returns 1 if
@@ -179,7 +172,7 @@ int sd_is_socket_inet(int fd, int family, int type, int listening, uint16_t port
 
   See sd_is_socket_unix(3) for more information.
 */
-int sd_is_socket_unix(int fd, int type, int listening, const char *path, size_t length);
+int sd_is_socket_unix(int fd, int type, int listening, const(char*) path, size_t length);
 
 /*
   Helper call for identifying a passed file descriptor. Returns 1 if
@@ -187,7 +180,7 @@ int sd_is_socket_unix(int fd, int type, int listening, const char *path, size_t 
   0 otherwise. If path is NULL a message queue name check is not
   done. Returns a negative errno style error code on failure.
 */
-int sd_is_mq(int fd, const char *path);
+int sd_is_mq(int fd, const(char*) path);
 
 /*
   Informs systemd about changed daemon state. This takes a number of
@@ -233,7 +226,7 @@ int sd_is_mq(int fd, const char *path);
 
   See sd_notify(3) for more information.
 */
-int sd_notify(int unset_environment, const char *state);
+int sd_notify(int unset_environment, const(char*) state);
 
 /*
   Similar to sd_notify() but takes a format string.
@@ -255,7 +248,7 @@ int sd_notify(int unset_environment, const char *state);
 
   See sd_notifyf(3) for more information.
 */
-int sd_notifyf(int unset_environment, const char *format, ...) _sd_printf_attr_(2,3);
+int sd_notifyf(int unset_environment, const(char*) format, ...);
 
 /*
   Returns > 0 if the system was booted with systemd. Returns < 0 on
@@ -268,10 +261,4 @@ int sd_notifyf(int unset_environment, const char *format, ...) _sd_printf_attr_(
 
   See sd_booted(3) for more information.
 */
-int sd_booted(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+int sd_booted();

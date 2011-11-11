@@ -1,8 +1,5 @@
 /*-*- Mode: C; c-basic-offset: 8; indent-tabs-mode: nil -*-*/
 
-#ifndef foosdreadaheadhfoo
-#define foosdreadaheadhfoo
-
 /***
   Copyright 2010 Lennart Poettering
 
@@ -27,9 +24,7 @@
   SOFTWARE.
 ***/
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern(C):
 
 /*
   Reference implementation of a few boot readahead related
@@ -56,14 +51,6 @@ extern "C" {
   See sd-readahead(7) for more information.
 */
 
-#ifndef _sd_hidden_
-#if (__GNUC__ >= 4) && !defined(SD_EXPORT_SYMBOLS)
-#define _sd_hidden_ __attribute__ ((visibility("hidden")))
-#else
-#define _sd_hidden_
-#endif
-#endif
-
 /*
   Controls ongoing disk read-ahead operations during boot-up. The argument
   must be a string, and either "cancel", "done" or "noreplay".
@@ -72,10 +59,4 @@ extern "C" {
   done = terminate read-ahead data collection, keep collected information
   noreplay = terminate read-ahead replay
 */
-int sd_readahead(const char *action) _sd_hidden_;
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+int sd_readahead(const(char*) action);
