@@ -24,6 +24,12 @@
   SOFTWARE.
 ***/
 
+version(Posix){}
+else
+{
+    static assert(false, "SystemD is only supported on Posix systems!");
+}
+
 extern(C):
 
 /*
