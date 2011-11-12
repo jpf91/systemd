@@ -24,7 +24,7 @@
   SOFTWARE.
 ***/
 
-module deimos.sd_daemon;
+module deimos.systemd.sd_daemon;
 
 version(Posix){}
 else

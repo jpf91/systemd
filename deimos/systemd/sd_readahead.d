@@ -24,7 +24,7 @@
   SOFTWARE.
 ***/
 
-module deimos.sd_readahead;
+module deimos.systemd.sd_readahead;
 
 version(Posix){}
 else
